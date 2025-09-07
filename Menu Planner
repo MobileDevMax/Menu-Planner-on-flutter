@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MenuPlannerApp());
+
+class MenuPlannerApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Menu Planner',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MenuPlannerPage(),
+    );
+  }
+}
+
+class MenuPlannerPage extends StatefulWidget {
+  @override
+  _MenuPlannerPageState createState() => _MenuPlannerPageState();
+}
+
+class _MenuPlannerPageState extends State<MenuPlannerPage> {
+  final List<String> availableDishes = [
+    'Soup', 
+    'Dumplings',
+    'Cutlet with potatoes',
+    'Steamed fish',
+    'Olivier salad',
+    'Pizza',
+    'Caesar salad',
+  ];
+
+  final Set<String> selectedDishes = {};
+
+  final List<String> menuPlan = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Menu Planner'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: availableDishes.length,
+              itemBuilder: (context, index) {
+                final dish = availableDishes[index];
+                final isSelected = selectedDishes.contains(dish);
+                return ListTile(
+                  title: Text(dish),
+                  trailing: Icon(
+                    isSelected ? Icons.check_box : Icons.check_box_outline_blank,
+                    color: isSelected ? Colors.green : null,
+                  ),
+                  onTap: () {
+                    setState(() {
+                      if (isSelected) {
+                        selectedDishes.remove(dish);
+                      } else {
+                        selectedDishes.add(dish);
+                      }
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  menuPlan.addAll(selectedDishes);
+                  selectedDishes.clear();
+                });
+              },
+              child: Text('Add to Menu'),
+            ),
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Current Menu Plan:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: menuPlan.length,
+              itemBuilder: (context, index) {
+                final dish = menuPlan[index];
+                return ListTile(
+                  title: Text(dish),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      setState(() {
+                        menuPlan.removeAt(index);
+                      });
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
